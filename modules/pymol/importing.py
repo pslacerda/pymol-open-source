@@ -1314,14 +1314,11 @@ PYMOL API
 
             chain = None
             if len(obj_code) in (5,6,7) and type in ('pdb', 'cif', 'mmtf'):
-                obj_code = (
-                    obj_code
-                        .replace('.', '')
-                        .replace('_', '')
-                        .replace('-', '')
-                        .replace(':', '')
-                    )
-                obj_code, chain = obj_code[:4], obj_code[4:]
+                chain = None
+                if type in ('pdb', 'cif', 'mmtf'):
+                    m = re.match(r'(\d[0-9a-z]{3})[:_.]?([a-z]+)$', obj_code, flags=re.I)
+                    if m is not None:
+                        obj_code, chain = m.group(1), m.group(2)
 
             obj_name = _self.get_legal_name(obj_name)
 
