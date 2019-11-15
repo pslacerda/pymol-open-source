@@ -14653,9 +14653,9 @@ void ExecutiveDump(PyMOLGlobals * G, const char *fname, const char *obj, int sta
 {
   SpecRec *rec = NULL;
   CExecutive *I = G->Executive;
-
+  printf("111111111111\n");
+  
   SceneUpdate(G, false);
-
   while(ListIterate(I->Spec, rec, next)) {
     if(rec->type == cExecObject) {
       if(strcmp(rec->obj->Name, obj) == 0)
@@ -14667,6 +14667,8 @@ void ExecutiveDump(PyMOLGlobals * G, const char *fname, const char *obj, int sta
       ObjectMeshDump((ObjectMesh *) rec->obj, fname, state, quiet);
     } else if(rec->obj->type == cObjectSurface) {
       ObjectSurfaceDump((ObjectSurface *) rec->obj, fname, state, quiet);
+    } else if (rec->obj->type == cObjectMap) {
+      ObjectMapDump((ObjectMap *) rec->obj, fname, state, quiet);
     } else {
       ErrMessage(G, __func__, "Invalid object type for this operation.");
     }
