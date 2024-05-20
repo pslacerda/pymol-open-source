@@ -544,26 +544,27 @@ SEE ALSO
 
 
     def _parse_bool(value: str):
-        if isinstance(value, str):
-            if value.lower() in ["yes", "1", "true", "on", "y"]:
-                return True
-            elif value.lower() in ["no", "0", "false", "off", "n"]:
-                return False
-            else:
-                raise Exception("Invalid boolean value: %s" % value)
-        elif isinstance(value, bool):
-            return value
+        if value.lower() in ["yes", "1", "true", "on", "y"]:
+            return True
+        elif value.lower() in ["no", "0", "false", "off", "n"]:
+            return False
         else:
-            raise Exception(f"Unsuported boolean flag {value}")
+            raise pymol.CmdException("Invalid boolean value: %s" % value)
 
     def _parse_list_str(value):
         return shlex.split(value)
 
     def _parse_list_int(value):
-        return list(map(int, shlex.split(value)))
+        try:
+            return list(map(int, shlex.split(value)))
+        except:
+            raise pymol.CmdException("Invalid list of integers: %s" % value)
 
     def _parse_list_float(value):
-        return list(map(float, shlex.split(value)))
+        try:
+            return list(map(float, shlex.split(value)))
+        except:
+            raise pymol.CmdException("Invalid list of floats: %s" % value)
 
     def declare_command(name, function=None, _self=cmd):
         if function is None:
@@ -572,12 +573,11 @@ SEE ALSO
         # new style commands should have annotations
         annotations = [a for a in function.__annotations__ if a != "return"]
         if function.__code__.co_argcount != len(annotations):
-            raise Exception("Messy annotations")
+            raise pymol.CmdException("Command declaration error: messy annotations")
 
         # docstring text, if present, should be dedented
         if function.__doc__ is not None:
             function.__doc__ = dedent(function.__doc__).strip()
-
 
         # Analysing arguments
         spec = inspect.getfullargspec(function)

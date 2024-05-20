@@ -233,12 +233,12 @@ def test_declare_command_type_return(capsys):
 def test_declare_command_list_str(capsys):
     @cmd.declare_command
     def func(a: List[str]):
-        print(a[-1])
+        print(a[1])
 
-    func(["a", "b", "c"])
-    cmd.do('func a b c')
+    func(["a", "b d", "c"])
+    cmd.do('func a "b d" c')
     out, err = capsys.readouterr()
-    assert out == 'c\nc\n'
+    assert out == 'b d\nb d\n'
 
 def test_declare_command_list_int(capsys):
     @cmd.declare_command
@@ -275,3 +275,4 @@ def test_declare_command_bool(capsys):
     cmd.do("func yes, no")
     out, err = capsys.readouterr()
     assert out == '' and err == ''
+
